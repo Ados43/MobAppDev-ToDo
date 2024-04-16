@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 2,
     backgroundColor: 'black',
-    marginBottom: 10,
+    marginBottom: 120,
   },
   addNew: {
     position: 'absolute',
