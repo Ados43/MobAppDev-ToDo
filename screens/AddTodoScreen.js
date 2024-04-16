@@ -1,24 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import Modal from 'react-native-modal'
-import { AntDesign } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { route } from '@react-navigation/native';
-
+import Modal from 'react-native-modal'; 
+import { AntDesign } from '@expo/vector-icons'; 
 
 export default function AddTodoScreen({ navigation, route }) {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
-    const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+    const [title, setTitle] = useState(''); // State for todo title
+    const [description, setDescription] = useState(''); // State for todo description
+    const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false); // State for success modal visibility
+    const [isErrorModalVisible, setIsErrorModalVisible] = useState(false); // State for error modal visibility
     
-    //
-    const { addTodo } = route.params;
-    //
+    const { addTodo } = route.params; // Extracting addTodo function from route params
 
+    // Function to handle saving of todo
     const handleSave = () => {
         if (title.trim() === '' || description.trim() === '') {
-            setIsErrorModalVisible(true);
+            setIsErrorModalVisible(true); // Showing error modal if title or description is empty
             return;
         }
     
@@ -27,15 +23,13 @@ export default function AddTodoScreen({ navigation, route }) {
             description: description.trim(),
         };
     
-        console.log('New Todo:', newTodo);
-    
-        setTitle('');
-        setDescription('');
+        console.log('New Todo:', newTodo); // Logging new todo
 
-        // navigation.navigate('Home', { newTodo });
-        addTodo(title, description)
-        //
-        setIsSuccessModalVisible(true);
+        setTitle(''); // Resetting title state
+        setDescription(''); // Resetting description state
+
+        addTodo(title, description); // Calling addTodo function to add new todo
+        setIsSuccessModalVisible(true); // Showing success modal
     };
     
     return (
@@ -72,6 +66,7 @@ export default function AddTodoScreen({ navigation, route }) {
         </TouchableOpacity>
       </View>
 
+      {/* Success modal */}
       <Modal isVisible={isSuccessModalVisible}>
         <View style={styles.modalContent}>
           <Text>Todo Added Successfully</Text>
@@ -81,6 +76,7 @@ export default function AddTodoScreen({ navigation, route }) {
         </View>
       </Modal>
 
+      {/* Error modal */}
       <Modal isVisible={isErrorModalVisible}>
         <View style={styles.modalContent}>
           <Text>Please fill in both Title and Description fields.</Text>
@@ -93,6 +89,7 @@ export default function AddTodoScreen({ navigation, route }) {
   );
 };
 
+// StyleSheet for styling components
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -129,14 +126,12 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: 5,
   },
-
   modalContent: {
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
   },
-
   modalButton: {
     marginTop: 20,
     color: 'blue',

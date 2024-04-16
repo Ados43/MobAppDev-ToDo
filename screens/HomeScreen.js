@@ -1,42 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, TextInput } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRoute } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons'; 
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { useRoute } from '@react-navigation/native'; 
 
 export default function HomeScreen({ navigation }) {
   const route = useRoute();
-  const { newTodo } = route.params ?? { newTodo: null };
-  const [todos, setTodos] = useState([]);
-//
+  const { newTodo } = route.params ?? { newTodo: null }; // Extracting newTodo from route params
+  const [todos, setTodos] = useState([]); // Initializing state for todos
+
+  // Function to add a new todo
   const addTodo = (title, description) => {
-    console.log(title, description)
-    setTodos(prevTodos => [...prevTodos, {title, description}]);
-  }
-//
-  useEffect(() => {
-  const fetchTodos = async () => {
-    try {
-      const savedTodos = await AsyncStorage.getItem('todos');
-      if (savedTodos !== null) {
-        setTodos(JSON.parse(savedTodos));
-      } else {
-        setDefaultTodos();
-      }
-    } catch (error) {
-      console.error('Error fetching todos:', error);
-    }
+    setTodos(prevTodos => [...prevTodos, { title, description }]);
   };
 
-  fetchTodos();
-}, []);
+  // Effect hook for fetching todos from AsyncStorage
+  useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        const savedTodos = await AsyncStorage.getItem('todos'); // Fetching saved todos
+        if (savedTodos !== null) {
+          setTodos(JSON.parse(savedTodos)); // Setting todos from saved data
+        } else {
+          setDefaultTodos(); // Setting default todos if no saved data found
+        }
+      } catch (error) {
+        console.error('Error fetching todos:', error); // Logging error if any
+      }
+    };
 
+    fetchTodos(); // Calling fetchTodos function
+  }, []);
+
+  // Effect hook for handling new todos
   useEffect(() => {
     if (newTodo) {
-        setTodos(prevTodos => [...prevTodos, newTodo]);
+      setTodos(prevTodos => [...prevTodos, newTodo]); // Adding new todo to the list
     }
-}, [newTodo]);
+  }, [newTodo]);
 
+  // Function to set default todos
   const setDefaultTodos = () => {
     setTodos([
       { id: 1, title: 'Wash the car', description: 'Wash the car in the evening.', completed: false, expanded: false },
@@ -45,7 +48,7 @@ export default function HomeScreen({ navigation }) {
     ]);
   };
 
-
+  // Function to toggle expansion state of a todo
   const toggleTodoExpansion = (id) => {
     setTodos((prevTodos) =>
       prevTodos.map((todo) =>
@@ -54,6 +57,7 @@ export default function HomeScreen({ navigation }) {
     );
   };
 
+  // Function to mark a todo as finished
   const markTodoAsFinished = (id) => {
     setTodos((prevTodos) =>
       prevTodos.map((todo) =>
@@ -62,17 +66,20 @@ export default function HomeScreen({ navigation }) {
     );
   };
 
+  // Function to delete a todo
   const deleteTodo = (id) => {
     setTodos((prevTodos) =>
       prevTodos.filter((todo) => todo.id !== id)
     );
   };
 
+  // Function to check if a todo is expanded
   const isTodoExpanded = (id) => {
     const todo = todos.find((item) => item.id === id);
     return todo ? todo.expanded : false;
   };
 
+  // Function to render a todo item
   const renderTodoItem = ({ item }) => (
     <View style={{ backgroundColor: item.finished ? '#e0e0e0' : '#fff', padding: 10, marginBottom: 10 }}>
       <TouchableOpacity
@@ -123,9 +130,7 @@ export default function HomeScreen({ navigation }) {
 
       <TouchableOpacity
         style={[styles.button, { backgroundColor: 'green' }]}
-        //
         onPress={() => navigation.navigate('AddTodo', { addTodo })}
-        //
       >
         <AntDesign name="pluscircle" size={20} color="white" style={{ marginRight: 10 }} />
         <Text style={styles.buttonText}>Add New Todo</Text>
@@ -134,6 +139,7 @@ export default function HomeScreen({ navigation }) {
   );
 }
 
+// StyleSheet for styling components
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -178,6 +184,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
   },
+
   button: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -186,6 +193,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
   },
+
   buttonText: {
     color: 'white',
     marginLeft: 5,
